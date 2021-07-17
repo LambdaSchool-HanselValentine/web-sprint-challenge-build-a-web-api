@@ -11,8 +11,9 @@ server.use(express.json());
 
 const helmet = require("helmet");
 const morgan = require("morgan");
-const actionsRouter = require("./actions/actions-router");
+
 const projectsRouter = require("./projects/projects-router");
+// const actionsRouter = require("./actions/actions-router");
 
 server.use(helmet());
 server.use(morgan("dev"));

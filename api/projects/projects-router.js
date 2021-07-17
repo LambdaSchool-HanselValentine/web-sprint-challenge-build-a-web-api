@@ -43,10 +43,12 @@ router.put(
 	Middleware.validateProjectId,
 	Middleware.validateProjectBody,
 	(req, res, next) => {
+		const { id } = req.params;
+
 		if (!req.project || !req.body) {
 			next();
 		} else {
-			Projects.update(req.params.id, req.body)
+			Projects.update(id, req.body)
 				.then((update) => {
 					res.status(200).json(update);
 				})
@@ -58,16 +60,31 @@ router.put(
 //[DELETE] /api/actions/:id
 // Returns no response body. If there is no action with the given id it responds with a status code 404.
 router.delete("/:id", Middleware.validateProjectId, (req, res, next) => {
+	const { id } = req.params;
+
 	if (!req.project) {
 		next();
 	} else {
-		Projects.remove(req.params.id)
-			.then((deletedProj) => {
-				res
-					.status(200)
-					.json({
-						message: `Successfully deleted. Number of projects deleted: ${deletedProj.length}`,
-					});
+		Projects.remove(id)
+			.then(() => {
+				res.status(200).json({
+					message: `Successfully deleted`,
+				});
+			})
+			.catch(next);
+	}
+});
+
+// [GET] /api/projects/:id/actions
+// Returns an array of actions (could be empty) belonging to a project with the given id. If there is no project with the given id it responds with a status code 404.
+router.get("/:id/actions", Middleware.validateProjectId, (req, res, next) => {
+	const { id } = req.params;
+	if (!req.project) {
+		next();
+	} else {
+		Projects.getProjectActions(id)
+			.then((actions) => {
+				res.status(200).json(actions);
 			})
 			.catch(next);
 	}

@@ -36,7 +36,7 @@ const validateProjectBody = async (req, res, next) => {
 		res.status(400).json({ message: "missing name field" });
 	} else if (!body.description) {
 		res.status(400).json({ message: "missing description field" });
-	} else if (!body.completed || typeof body.completed !== "boolean") {
+	} else if (typeof body.completed !== "boolean") {
 		// for the boolean on [PUT] update request
 		res.status(400).json({ message: "completed must be a boolean" });
 	} else {

@@ -6,8 +6,8 @@ const Middleware = require("./projects-middleware");
 
 const router = express.Router();
 
-// Returns an array of projects as the body of the response.
-// If there are no projects it responds with an empty array.
+// [GET] / api / projects;
+// Returns an array of projects as the body of the response. If there are no projects it responds with an empty array.
 router.get("/", (req, res) => {
 	Projects.get()
 		.then((projects) => {
@@ -18,8 +18,8 @@ router.get("/", (req, res) => {
 		});
 });
 
-// Returns a project with the given id as the body of the response.
-// If there is no project with the given id it responds with a status code 404.
+// [GET] /api/projects/:id
+// Returns a project with the given id as the body of the response. If there is no project with the given id it responds with a status code 404.
 router.get("/:id", Middleware.validateProjectId, (req, res, next) => {
 	if (!req.project) {
 		next();
@@ -28,8 +28,8 @@ router.get("/:id", Middleware.validateProjectId, (req, res, next) => {
 	}
 });
 
-// Returns the newly created project as the body of the response.
-// If the request body is missing any of the required fields it responds with a status code 400.
+// [POST] /api/projects
+// Returns the newly created project as the body of the response. If the request body is missing any of the required fields it responds with a status code 400.
 router.post("/", Middleware.validateProjectBody, (req, res, next) => {
 	Projects.insert(req.body)
 		.then((newProj) => {
@@ -37,6 +37,25 @@ router.post("/", Middleware.validateProjectBody, (req, res, next) => {
 		})
 		.catch(next);
 });
+
+//[PUT] /api/projects/:id
+//Returns the updated project as the body of the response. If there is no project with the given id it responds with a status code 404. If the request body is missing any of the required fields it responds with a status code 400.
+router.put(
+	"/:id",
+	Middleware.validateProjectId,
+	Middleware.validateProjectBody,
+	(req, res, next) => {
+		if (!req.project || !req.body) {
+			next();
+		} else {
+			Projects.update(req.params.id, req.body)
+				.then((update) => {
+					res.status(200).json(update);
+				})
+				.catch(next);
+		}
+	},
+);
 
 // projects-router error handler:
 router.use((err, req, res, next) => {

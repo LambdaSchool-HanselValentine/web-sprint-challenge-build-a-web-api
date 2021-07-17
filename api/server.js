@@ -17,7 +17,7 @@ const projectsRouter = require("./projects/projects-router");
 server.use(helmet());
 server.use(morgan("dev"));
 
-// server.use("/api/projects", projectsRouter);
+server.use("/api/projects", projectsRouter);
 // server.use("/api/actions", actionsRouter);
 
 // root handler
@@ -27,7 +27,11 @@ server.get("/", (req, res) => {
 
 // catch all
 server.use("*", (req, res) => {
-	res.status(500).json({ message: "that place doesn't exist" });
+	res
+		.status(404)
+		.send(
+			`<h2> oops! that place doesn't exist </h2> <p> read our docs for more info </p>`,
+		);
 });
 
 // error handler

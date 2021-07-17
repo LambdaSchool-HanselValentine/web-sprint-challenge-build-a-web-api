@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-// Write your "projects" router here!
+
 const express = require("express");
 const Projects = require("./projects-model");
 const Middleware = require("./projects-middleware");
@@ -8,14 +8,12 @@ const router = express.Router();
 
 // [GET] / api / projects;
 // Returns an array of projects as the body of the response. If there are no projects it responds with an empty array.
-router.get("/", (req, res) => {
+router.get("/", (req, res, next) => {
 	Projects.get()
 		.then((projects) => {
 			res.status(200).json(projects);
 		})
-		.catch(() => {
-			res.status(500).json({ message: "error fetching projects" });
-		});
+		.catch(next);
 });
 
 // [GET] /api/projects/:id
@@ -56,6 +54,24 @@ router.put(
 		}
 	},
 );
+
+//[DELETE] /api/actions/:id
+// Returns no response body. If there is no action with the given id it responds with a status code 404.
+router.delete("/:id", Middleware.validateProjectId, (req, res, next) => {
+	if (!req.project) {
+		next();
+	} else {
+		Projects.remove(req.params.id)
+			.then((deletedProj) => {
+				res
+					.status(200)
+					.json({
+						message: `Successfully deleted. Number of projects deleted: ${deletedProj.length}`,
+					});
+			})
+			.catch(next);
+	}
+});
 
 // projects-router error handler:
 router.use((err, req, res, next) => {

@@ -1,7 +1,7 @@
 // add middlewares here related to projects
 const Projects = require("./projects-model");
 
-//logger middleware
+//logger middleware (not used because Im using morgan but keeping it for future references)
 const logger = (req, res, next) => {
 	const method = req.method;
 	const url = req.url;
@@ -19,7 +19,7 @@ const validateProjectId = async (req, res, next) => {
 
 	const project = await Projects.get(id);
 	if (!project) {
-		res.status(404).json({ message: "projects not found" });
+		res.status(404).json({ message: "project not found" });
 	} else {
 		req.project = project;
 		next();
@@ -36,6 +36,9 @@ const validateProjectBody = async (req, res, next) => {
 		res.status(400).json({ message: "missing name field" });
 	} else if (!body.description) {
 		res.status(400).json({ message: "missing description field" });
+	} else if (!body.completed || typeof body.completed !== "boolean") {
+		// for the boolean on [PUT] update request
+		res.status(400).json({ message: "completed must be a boolean" });
 	} else {
 		req.body.name = body.name.trim();
 		req.body.description = body.description.trim();

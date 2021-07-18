@@ -6,7 +6,7 @@ const Middleware = require("./projects-middleware");
 
 const router = express.Router();
 
-// [GET] / api / projects;
+// [GET] /api/projects;
 // Returns an array of projects as the body of the response. If there are no projects it responds with an empty array.
 router.get("/", (req, res, next) => {
 	Projects.get()
@@ -22,7 +22,7 @@ router.get("/:id", Middleware.validateProjectId, (req, res, next) => {
 	if (!req.project) {
 		next();
 	} else {
-		res.json(req.project);
+		res.status(200).json(req.project);
 	}
 });
 
@@ -68,7 +68,7 @@ router.delete("/:id", Middleware.validateProjectId, (req, res, next) => {
 		Projects.remove(id)
 			.then(() => {
 				res.status(200).json({
-					message: `Successfully deleted`,
+					message: `Project successfully deleted`,
 				});
 			})
 			.catch(next);

@@ -16,7 +16,6 @@ const logger = (req, res, next) => {
 // ProjectId validator:
 const validateProjectId = async (req, res, next) => {
 	const { id } = req.params;
-
 	const project = await Projects.get(id);
 	if (!project) {
 		res.status(404).json({ message: "project not found" });

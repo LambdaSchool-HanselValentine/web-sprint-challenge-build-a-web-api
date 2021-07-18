@@ -13,13 +13,13 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 
 const projectsRouter = require("./projects/projects-router");
-// const actionsRouter = require("./actions/actions-router");
+const actionsRouter = require("./actions/actions-router");
 
 server.use(helmet());
 server.use(morgan("dev"));
 
 server.use("/api/projects", projectsRouter);
-// server.use("/api/actions", actionsRouter);
+server.use("/api/actions", actionsRouter);
 
 // root handler
 server.get("/", (req, res) => {
